@@ -1,38 +1,34 @@
 <?php
+header("Content-type: text/html; charset=gb2312");
 include_once 'curl.php';
 $curl = new curl();
-$url = "http://jx11x5.icaile.com/";
-#$url = "https://www.caipiaokong.com/chart/bjpks/1.html";
+$url = "http://zs.cailele.com/jx11x5/baseTrend.php";
 $data = $curl->get($url);
 //print_r($data);
 $contents= $data['data'];
-print_r($contents);
-
-/**
-$pattern = '/<tr class="(odd)?">\s*<td>(\d{6})<\/td>\s*<td>(([01]\d,){9}[01]\d)<\/td>\s*<td>\d{4}-\d\d-\d\d \d\d:\d\d<\/td>\s*<\/tr>/Uims';
-if (!preg_match($pattern, $contents, $match)){
-	
-}
+$pattern = '/<td>(20\d{8})  <\/td>\s*((<td class="yellow">[01]\d <\/td>\s*){5})/Uims';
 preg_match_all($pattern, $contents, $matches);
-*/
-$pattern = '/<tr class="ball_row">\s*<td class=\'issue\'><div class="issueinfo">(\d{6})<\/div><\/td>\s*((<td align="center" class="codetd"><div class="historycode">(\d|10)<\/div><\/td>\s*){10})/Uims';
-preg_match_all($pattern, $contents, $match);
-//print_r($match);
 
-$issues= $match[1];
-$codes= $match[2];
-foreach ($issues as $k=>$v){
-	$tmpIssue = $v;
-	$code = $codes[$k];
-	$tmpPattern = '/<td align="center" class="codetd"><div class="historycode">(\d|10)<\/div><\/td>/Uims';
-	preg_match_all($tmpPattern, $code, $tmpMatch);
-	$tmpCode = "";
-	foreach ($tmpMatch[1] as $v){
-		if($v<10) $v="0".$v;
-		$tmpCode .= $v." ";
+$result= array();
+foreach ($matches[1] as $k => $v){
+	$tmpIssue = trim($v);
+	$tmpIssue = substr($tmpIssue, 0, 8).'-'.substr($tmpIssue, 8, 2);
+	if (!preg_match('`^201\d{5}-\d{2}$`',$tmpIssue)){
+		echo  "奖期：{$tmpIssue}";
+		exit();
 	}
-	$tmpCode = trim($tmpCode);
-	echo "<br/>";
-	echo $tmpIssue,"-",$tmpCode;
+	$tmpPattern = '/<td class="yellow">([01]\d) <\/td>/Uims';
+	$codes= trim($matches[2][$k]);
+	preg_match_all($tmpPattern, $codes, $tmpMatch);
+	$tmpNumber = "";
+	foreach ($tmpMatch[1] as $v){
+		$tmpNumber.= $v." ";
+	}
+	$tmpNumber= trim($tmpNumber);
+	if (!preg_match('`^([01]\d\s){4}[01]\d$`Ui', $tmpNumber)){
+		echo  "号码：{$tmpNumber}";
+		exit();
+	}
+	$result[$tmpIssue] = array('issue' => $tmpIssue, 'number' =>$tmpNumber);
 }
-//print_r($data);
+print_r($result);	
