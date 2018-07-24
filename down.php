@@ -1,30 +1,25 @@
 <?php
 include_once 'curl.php';
 $curl = new curl();
-$url = "http://kj.13322.com/ssc_xjssc_history_dtoday.html";
+$url = "http://kj.13322.com/ssc_cqssc_BaseTrend.html";
 $data = $curl->get($url);
 
 $contents= $data['data'];
 //print_r($contents);
 echo "<br/>";
-$pattern = '/<td class="tdbbs tdbrs">(\d{10})<\/td>\s*<td class="tdbb tdbrs" align="center">\s*<table width="200" border="0" cellpadding="0" '
-		.'cellspacing="0" class="subtab">\s*<tr>\s*((<td width="40" class="Ballsc_blue">\d<\/td>\s*){5})\s*<\/tr>\s*<\/table>\s*<\/td>/Uims';
+$pattern = '/<td class="tdbbs tdbrs ">(20\d{9})<\/td>\s*<td class="tdbbs tdbrs kjfls "><span class="kjfc">(\d{5})<\/span><\/td>/Uims';
 preg_match_all($pattern, $contents, $matches);
-//print_r($match[1]);
+print_r($matches[1]);
 echo "<br/>";
 echo "<br/>";
-//print_r($match[2]);
+print_r($matches[2]);
+echo "<br/>";
+echo "<br/>";
 $reult = array();
-$pattern = '/<td width="40" class="Ballsc_blue">(\d)<\/td>/Uims';
 foreach ($matches[1] as $k=>$v){
 	$tmpIssue = trim($v);
-	$tmpIssue = substr($tmpIssue,2,8);
+	$tmpIssue = substr($tmpIssue,2,9);
 	$tmpNumber = trim($matches[2][$k]);
-	preg_match_all($pattern, $tmpNumber, $tmpMatch);
-	$tmpNumber = "";
-	foreach ($tmpMatch[1] as $vv){
-		$tmpNumber .= $vv;
-	}
 	$reult[$tmpIssue] = $tmpNumber;
 }
 print_r($reult);

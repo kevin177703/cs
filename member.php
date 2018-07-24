@@ -9,23 +9,25 @@
 <body>
 <input type="submit" name="Submit" onclick="login()" value="登录" />
 <input type="submit" name="Submit" onclick="logout()" value="退出" />
-<input type="submit" name="Submit" onclick="sendsms()" value="注册短信" />
-<input type="submit" name="Submit" onclick="register()" value="注册" />
-<input type="submit" name="Submit" onclick="bannerList()" value="获取banner图" />
-<input type="submit" name="Submit" onclick="homeList()" value="首页九宫格" />
-<input type="submit" name="Submit" onclick="transferRecord('deposit')" value="deposit记录" />
+<input type="submit" name="Submit" onclick="pay_list()" value="支付列表" />
+<input type="submit" name="Submit" onclick="pay_get()" value="支付信息" />
+<input type="submit" name="Submit" onclick="deposit_bank_list()" value="收款银行卡" />
+<input type="submit" name="Submit" onclick="deposit_alipay_list()" value="收款支付宝" />
+<input type="submit" name="Submit" onclick="withdraw_get()" value="获取用户取款信息" />
+<input type="submit" name="Submit" onclick="daifubao()" value="代付宝支付" />
 </body>
 <script>
-function homeList(){
+function daifubao(){
 	$.ajax({
-		url : "http://local.emc188.cc:8085/api/website/home/list", 
+		url : "http://local.emc188.cc:8085/api/center/deposit/online", 
 		dataType : "json",
 		xhrFields: {
             withCredentials: true
     	},
-    	 crossDomain: true,
+    	crossDomain: true,
 		data: {
-			type:'app'
+			webPayId : 3,
+			cash : 100
 		},
 		success : function(data) { 
 		},
@@ -34,16 +36,15 @@ function homeList(){
 		}
 	});
 }
-function bannerList(){
+function withdraw_get(){
 	$.ajax({
-		url : "http://local.emc188.cc:8085/api/website/banner/list", 
+		url : "http://local.emc188.cc:8085/api/center/withdraw/get", 
 		dataType : "json",
 		xhrFields: {
             withCredentials: true
     	},
-    	 crossDomain: true,
+    	crossDomain: true,
 		data: {
-			type : 'WEB'
 		},
 		success : function(data) { 
 		},
@@ -52,48 +53,72 @@ function bannerList(){
 		}
 	});
 }
-
-function register(){
+function deposit_alipay_list(){
 	$.ajax({
-		url : "http://local.emc188.cc:8085/api/website/register", 
+		url : "http://local.emc188.cc:8085/api/center/deposit/alipay/list", 
 		dataType : "json",
 		xhrFields: {
             withCredentials: true
     	},
-    	 crossDomain: true,
+    	crossDomain: true,
 		data: {
-			loginName : "test1042",
-			password : "1234qwer",
-			realName : "李四",
-			phone : "abcdered",
-			vcode : "3786",
-			type : "WEB"
 		},
 		success : function(data) { 
-			alert(data.info);
 		},
 		error : function() {
 			alert("error");
 		}
 	});
 }
-function sendsms(){
+function deposit_bank_list(){
 	$.ajax({
-		url : "http://local.emc188.cc:8085/api/website/sendsms", 
+		url : "http://local.emc188.cc:8085/api/center/deposit/bank/list", 
 		dataType : "json",
 		xhrFields: {
             withCredentials: true
     	},
-    	 crossDomain: true,
+    	crossDomain: true,
 		data: {
-			phone : "13510001042",
-			type : "register",
 		},
 		success : function(data) { 
-			alert(data.info);
 		},
 		error : function() {
 			alert("error");
+		}
+	});
+}
+function pay_get(){
+	$.ajax({
+		url : "http://local.emc188.cc:8085/api/center/deposit/online/get", 
+		dataType : "json",
+		xhrFields: {
+            withCredentials: true
+    	},
+    	crossDomain: true,
+		data: {
+			webPayId : 3
+		},
+		success : function(data) { 
+		},
+		error : function() {
+			alert("error");
+		}
+	});
+}
+function pay_list(){
+	$.ajax({
+		url : "http://local.emc188.cc:8085/api/center/deposit/list", 
+		dataType : "json",
+		xhrFields: {
+            withCredentials: true
+    	},
+    	crossDomain: true,
+		data: {
+		},
+		success : function(data) { 
+		},
+		error : function(data) {
+			alert(data);
 		}
 	});
 }
